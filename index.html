@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaAI — Next-Gen AI Assistant</title>
+  <meta name="description" content="A powerful, modern AI companion for coding, writing, learning, and idea generation.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="shortcut icon" href="ChatGPT Image Sep 7, 2026, 03_04_11 PM.png" type="image/x-icon">
+</head>
+<body>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear"></i> Settings</h3>
+        <button id="close-modal" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <h4>Appearance</h4>
+          <div class="setting-row">
+            <span>Theme Mode</span>
+            <select id="modal-theme-select" class="select-input">
+              <option value="dark">Dark Mode</option>
+              <option value="light">Light Mode</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h4>Chat</h4>
+          <div class="setting-row">
+            <span>Typing Animation</span>
+            <input type="checkbox" id="toggle-typing-anim" checked>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h4>Data Management</h4>
+          <div class="setting-row">
+            <span>Export All Conversations</span>
+            <button id="btn-export-chats" class="btn btn-secondary">Export JSON</button>
+          </div>
+          <div class="setting-row">
+            <span>Clear History</span>
+            <button id="btn-clear-all" class="btn btn-danger">Clear All Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-layout">
+    
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
+          <span class="brand-name">Nova<span>AI</span></span>
+        </div>
+        <button id="btn-close-sidebar" class="btn-icon mobile-only"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <button id="btn-new-chat-sidebar" class="btn btn-new-chat">
+        <i class="fa-solid fa-plus"></i> New Chat
+      </button>
+
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="chat-search" placeholder="Search conversations...">
+      </div>
+
+      <div class="history-section">
+        <span class="section-title">Chat History</span>
+        <div id="chat-history-list" class="history-list">
+          </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="btn-open-settings" class="footer-btn"><i class="fa-solid fa-sliders"></i> Settings</button>
+        <div class="user-profile">
+          <div class="avatar-user">U</div>
+          <div class="user-info">
+            <span class="user-name">Pro Member</span>
+            <span class="user-status">Active</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <main class="chat-workspace">
+      
+      <header class="chat-header">
+        <div class="header-left">
+          <button id="btn-open-sidebar" class="btn-icon mobile-only"><i class="fa-solid fa-bars"></i></button>
+          <div class="header-status">
+            <h2>NovaAI</h2>
+            <span class="status-indicator"><span class="dot"></span> Online</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btn-new-chat-header" class="btn-icon" title="New Chat"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button id="theme-toggle" class="btn-icon" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+          <button id="btn-header-settings" class="btn-icon" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        </div>
+      </header>
+
+      <div id="chat-viewport" class="chat-viewport">
+        
+        <div id="welcome-screen" class="welcome-screen">
+          <div class="welcome-badge"><i class="fa-solid fa-sparkles"></i> NovaAI 3.5 Turbo</div>
+          <h1>How can I help you today?</h1>
+          <p>Ask questions, generate ideas, write code, or explore anything with NovaAI.</p>
+
+          <div class="cards-grid">
+            <div class="card-suggestion" data-prompt="Help me build a responsive website in HTML and CSS.">
+              <i class="fa-solid fa-code icon"></i>
+              <h3>Code</h3>
+              <p>"Help me build a responsive website"</p>
+            </div>
+            <div class="card-suggestion" data-prompt="Write a professional follow-up email after a job interview.">
+              <i class="fa-solid fa-pen-to-square icon"></i>
+              <h3>Writing</h3>
+              <p>"Write a professional email"</p>
+            </div>
+            <div class="card-suggestion" data-prompt="Give me 10 innovative startup ideas using artificial intelligence.">
+              <i class="fa-solid fa-lightbulb icon"></i>
+              <h3>Ideas</h3>
+              <p>"Give me 10 startup ideas"</p>
+            </div>
+            <div class="card-suggestion" data-prompt="Explain JavaScript closure and scopes in simple terms.">
+              <i class="fa-solid fa-book-open icon"></i>
+              <h3>Learn</h3>
+              <p>"Explain JavaScript in simple words"</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages-container" class="messages-container hidden"></div>
+      </div>
+
+      <div class="chat-input-container">
+        <div class="input-card">
+          <button class="input-action-btn" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+          <textarea id="chat-input" placeholder="Message NovaAI..." rows="1"></textarea>
+          <button id="btn-voice" class="input-action-btn" title="Voice input"><i class="fa-solid fa-microphone"></i></button>
+          <button id="btn-send" class="btn-send" disabled><i class="fa-solid fa-arrow-up"></i></button>
+        </div>
+        <span class="disclaimer-text">NovaAI can make mistakes. Verify important info.</span>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
